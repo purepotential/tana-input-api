@@ -2,12 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files and tsconfig first
-COPY package.json yarn.lock tsconfig.json ./
-RUN yarn install --frozen-lockfile
-
-# Copy source code
+# Copy all source files first
 COPY . .
+
+# Install dependencies
+RUN yarn install --frozen-lockfile
 
 # Build TypeScript
 RUN yarn build
