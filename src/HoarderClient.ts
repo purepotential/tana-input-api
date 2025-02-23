@@ -84,6 +84,6 @@ export class HoarderClient {
   }
 
   getArchiveUrl(archiveId: string): string {
-    return `${this.baseUrl}/archive/${archiveId}`;
+    return `${this.baseUrl}/api/assets/${archiveId}`;
   }
 } 
