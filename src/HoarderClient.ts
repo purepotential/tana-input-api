@@ -52,7 +52,7 @@ export type HoarderBookmark = z.infer<typeof HoarderBookmarkSchema>;
 
 export const HoarderResponseSchema = z.object({
   bookmarks: z.array(HoarderBookmarkSchema),
-  nextCursor: z.string().optional(),
+  nextCursor: z.string().nullable().optional(),
 });
 
 export type HoarderResponse = z.infer<typeof HoarderResponseSchema>;
