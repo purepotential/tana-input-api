@@ -2,8 +2,13 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "node-cache": "^5.1.2",
     "node-fetch": "^3.2.10",
     "readline": "^1.3.0",
+    "redis": "^4.7.0",
+    "winston": "^3.17.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -13,8 +18,10 @@
   "scripts": {
     "prepare": "rm -rf dist/ && ./node_modules/.bin/tsc  --project tsconfig.json",
     "build": "yarn prepare",
-    "example:books": "yarn build && node --experimental-modules --es-module-specifier-resolution=node dist/examples/books.js",
-    "example:upload": "yarn build && node --experimental-modules --es-module-specifier-resolution=node dist/examples/upload.js",
-    "example:smokeTest_internal": "yarn build && node --experimental-modules --es-module-specifier-resolution=node dist/examples/smokeTest.js"
+    "example:books": "yarn build && node dist/examples/books.js",
+    "example:upload": "yarn build && node dist/examples/upload.js",
+    "example:smokeTest_internal": "yarn build && node dist/examples/smokeTest.js",
+    "sync:hoarder": "yarn build && node dist/examples/sync-hoarder.js",
+    "test:sync": "yarn build && node --experimental-import-meta-resolve dist/examples/test-sync.js"
   }
 }

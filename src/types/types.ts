@@ -83,3 +83,74 @@ export type TanaNode = {
   description: string;
   children?: TanaNode[];
 };
+
+export type Article = {
+  name: string;
+  description?: string;
+  supertags: [{
+    /* Article */
+    id: 'Jv6WSsH6CO7u'
+  }];
+  children: [
+    {
+      /* Bookmark ID */
+      type: 'field',
+      attributeId: '1IJSCbcJ-4x6',
+      children: APIFieldValue[]
+    },
+    {
+      /* Title */
+      type: 'field',
+      attributeId: 'TAuNkyKd4gv4',
+      children: APIFieldValue[]
+    },
+    {
+      /* Description */
+      type: 'field',
+      attributeId: 'kmEPGZ9RM0hA',
+      children: APIFieldValue[]
+    },
+    {
+      /* AI Tags */
+      type: 'field',
+      attributeId: 'aosg60mUhj0s',
+      children: APIFieldValue[]
+    },
+    {
+      /* Created */
+      type: 'field',
+      attributeId: 'hrTDjcwTMcyo',
+      children: [{
+        type: 'node',
+        dataType: 'date',
+        name: string
+      }]
+    },
+    {
+      /* Source URL */
+      type: 'field',
+      attributeId: '1Q0LdvnE7q7a',
+      children: [{
+        type: 'node',
+        dataType: 'url',
+        name: string
+      }]
+    },
+    {
+      /* Archive ID */
+      type: 'field',
+      attributeId: 'zENeYHbvA6f4',
+      children: APIFieldValue[]
+    },
+    {
+      /* Archive URL */
+      type: 'field',
+      attributeId: 'jO0i0yhryT7J',
+      children: [{
+        type: 'node',
+        dataType: 'url',
+        name: string
+      }]
+    }
+  ]
+};

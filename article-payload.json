@@ -1,0 +1,92 @@
+{
+    "nodes": [
+      {
+        "name": "New node",
+        "supertags": [
+          {
+            "id": "Jv6WSsH6CO7u"
+          }
+        ],
+        "children": [
+          {
+            "type": "field",
+            "attributeId": "1IJSCbcJ-4x6",
+            "children": [
+              {
+                "name": "Field value"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "TAuNkyKd4gv4",
+            "children": [
+              {
+                "name": "Field value"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "kmEPGZ9RM0hA",
+            "children": [
+              {
+                "name": "Field value"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "aosg60mUhj0s",
+            "children": [
+              {
+                "name": "Field value"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "hrTDjcwTMcyo",
+            "children": [
+              {
+                "dataType": "date",
+                "name": "2025-02-23T13:53:21.017Z"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "1Q0LdvnE7q7a",
+            "children": [
+              {
+                "dataType": "url",
+                "name": "https://tana.inc/"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "zENeYHbvA6f4",
+            "children": [
+              {
+                "name": "Field value"
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "attributeId": "jO0i0yhryT7J",
+            "children": [
+              {
+                "dataType": "url",
+                "name": "https://tana.inc/"
+              }
+            ]
+          },
+          {
+            "name": "Child node"
+          }
+        ]
+      }
+    ]
+  }

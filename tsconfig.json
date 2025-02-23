@@ -1,24 +1,24 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-
     "rootDir": "./src",
     "declaration": true,
-    "target": "es2016",
-    "module": "ESNext",
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "noFallthroughCasesInSwitch": true,
     "lib": ["dom", "esnext"],
     "esModuleInterop": true,
-    "sourceMap": false,
-    "moduleResolution": "node",
-
+    "sourceMap": true,
     "types": ["node"],
     "noImplicitAny": true,
     "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": ["./src"]
 }

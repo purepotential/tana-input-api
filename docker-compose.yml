@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  sync:
+    build: .
+    environment:
+      - TANA_TOKEN=${TANA_TOKEN}
+      - HOARDER_TOKEN=${HOARDER_TOKEN}
+      - HOARDER_BASE_URL=${HOARDER_BASE_URL}
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./backup:/app/backup
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - sync-network
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - sync-network
+
+volumes:
+  redis-data:
+
+networks:
+  sync-network:
+    driver: bridge 
