@@ -129,10 +129,27 @@ export class BookmarkSyncService {
   }
 
   private mapBookmarkToTanaNode(bookmark: HoarderBookmark): APIPlainNode {
+    // Helper function to truncate and clean text
+    const cleanText = (text: string, maxLength: number = 8000): string => {
+      // Remove newlines and excessive whitespace
+      let cleaned = text.replace(/\s+/g, ' ').trim();
+      // Truncate if needed
+      if (cleaned.length > maxLength) {
+        cleaned = cleaned.slice(0, maxLength - 3) + '...';
+      }
+      return cleaned;
+    };
+
     const aiTags = bookmark.tags
       .filter(tag => tag.attachedBy === 'ai')
       .map(tag => tag.name)
       .join(', ');
+
+    // Clean and truncate title
+    const title = cleanText(bookmark.content.title || bookmark.title || 'Untitled Bookmark', 1000);
+    
+    // Clean and truncate description
+    const description = cleanText(bookmark.content.description || bookmark.summary || '', 8000);
 
     const fields: APIField[] = [
       {
@@ -143,17 +160,17 @@ export class BookmarkSyncService {
       {
         type: 'field',
         attributeId: 'TAuNkyKd4gv4',
-        children: [{ name: bookmark.content.title || bookmark.title || 'Untitled Bookmark' }],
+        children: [{ name: title }],
       },
       {
         type: 'field',
         attributeId: 'kmEPGZ9RM0hA',
-        children: [{ name: bookmark.content.description || bookmark.summary || '' }],
+        children: [{ name: description }],
       },
       {
         type: 'field',
         attributeId: 'aosg60mUhj0s',
-        children: [{ name: aiTags }],
+        children: [{ name: cleanText(aiTags, 1000) }],
       },
       {
         type: 'field',
@@ -184,7 +201,7 @@ export class BookmarkSyncService {
     ];
 
     return {
-      name: bookmark.content.title || bookmark.title || 'Untitled Bookmark',
+      name: title,
       supertags: [{ id: 'Jv6WSsH6CO7u' }], // Article supertag
       children: fields,
     };
@@ -194,15 +211,21 @@ export class BookmarkSyncService {
     // Check if this specific bookmark ID has been synced
     const idCacheKey = `bookmark_${bookmark.id}`;
     if (await this.cache.has(idCacheKey)) {
-      this.logger.debug(`Bookmark ${bookmark.id} already synced (ID match), skipping`);
+      this.logger.info(`Duplicate found (ID match) - Bookmark ID: ${bookmark.id}, Title: "${bookmark.content.title || bookmark.title || 'Untitled'}", URL: ${bookmark.content.url}`);
       return true;
     }
 
     // Check if any bookmark with this normalized URL has been synced
-    const normalizedUrl = this.normalizeUrl(bookmark.content.url);
+    const originalUrl = bookmark.content.url;
+    const normalizedUrl = this.normalizeUrl(originalUrl);
     const urlCacheKey = `url_${normalizedUrl}`;
+    
     if (await this.cache.has(urlCacheKey)) {
-      this.logger.debug(`Bookmark ${bookmark.id} already synced (URL match: ${normalizedUrl}), skipping`);
+      this.logger.info(
+        `Duplicate found (URL match) - Bookmark ID: ${bookmark.id}, Title: "${bookmark.content.title || bookmark.title || 'Untitled'}"` +
+        `\nOriginal URL: ${originalUrl}` +
+        `\nNormalized URL: ${normalizedUrl}`
+      );
       return true;
     }
 
