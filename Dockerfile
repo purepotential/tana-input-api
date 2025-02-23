@@ -2,8 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
-COPY package.json yarn.lock ./
+# Copy package files and tsconfig first
+COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install --frozen-lockfile
 
 # Copy source code
