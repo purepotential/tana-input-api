@@ -27,7 +27,7 @@ export const HoarderBookmarkSchema = z.object({
     imageAssetId: z.string().optional(),
     screenshotAssetId: z.string().optional(),
     fullPageArchiveAssetId: z.string().optional(),
-    favicon: z.string().optional(),
+    favicon: z.string().nullable().optional(),
     htmlContent: z.string().nullable().optional(),
     crawledAt: z.string().optional(),
   }),
