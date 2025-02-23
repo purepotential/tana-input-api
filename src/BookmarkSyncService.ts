@@ -45,6 +45,77 @@ export class BookmarkSyncService {
     });
   }
 
+  private normalizeUrl(url: string): string {
+    try {
+      const parsedUrl = new URL(url);
+      
+      // Remove common tracking parameters
+      const paramsToRemove = [
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
+        'source',
+        'ref',
+        'referral',
+        'fbclid',
+        'gclid',
+        '_ga',
+        'mc_cid',
+        'mc_eid',
+        'yclid',
+        '_hsenc',
+        '_hsmi',
+        'mkt_tok',
+        'campaign',
+        'medium',
+        'term',
+        'content',
+      ];
+
+      // Create a new URLSearchParams object
+      const params = parsedUrl.searchParams;
+      
+      // Remove tracking parameters
+      paramsToRemove.forEach(param => {
+        params.delete(param);
+      });
+
+      // Sort remaining parameters alphabetically for consistency
+      const sortedParams = Array.from(params.entries())
+        .sort(([a], [b]) => a.localeCompare(b));
+
+      // Clear all params
+      parsedUrl.search = '';
+
+      // Add back sorted non-tracking params
+      if (sortedParams.length > 0) {
+        parsedUrl.search = '?' + new URLSearchParams(sortedParams).toString();
+      }
+
+      // Remove hash/fragment
+      parsedUrl.hash = '';
+
+      // Remove 'www.' from hostname
+      parsedUrl.hostname = parsedUrl.hostname.replace(/^www\./, '');
+
+      // Ensure protocol is always https if available
+      parsedUrl.protocol = 'https:';
+
+      // Remove trailing slash
+      let normalizedUrl = parsedUrl.toString();
+      if (normalizedUrl.endsWith('/')) {
+        normalizedUrl = normalizedUrl.slice(0, -1);
+      }
+
+      return normalizedUrl;
+    } catch (error) {
+      this.logger.warn(`Failed to normalize URL: ${url}`, { error });
+      return url;
+    }
+  }
+
   async initialize(): Promise<void> {
     await this.cache.connect();
     await this.backupService.restore(); // Restore from backup if available
@@ -127,10 +198,11 @@ export class BookmarkSyncService {
       return true;
     }
 
-    // Check if any bookmark with this URL has been synced
-    const urlCacheKey = `url_${bookmark.content.url}`;
+    // Check if any bookmark with this normalized URL has been synced
+    const normalizedUrl = this.normalizeUrl(bookmark.content.url);
+    const urlCacheKey = `url_${normalizedUrl}`;
     if (await this.cache.has(urlCacheKey)) {
-      this.logger.debug(`Bookmark ${bookmark.id} already synced (URL match: ${bookmark.content.url}), skipping`);
+      this.logger.debug(`Bookmark ${bookmark.id} already synced (URL match: ${normalizedUrl}), skipping`);
       return true;
     }
 
@@ -138,9 +210,10 @@ export class BookmarkSyncService {
   }
 
   private async markBookmarkSynced(bookmark: HoarderBookmark): Promise<void> {
-    // Store both ID and URL-based cache entries
+    // Store both ID and normalized URL-based cache entries
     const idCacheKey = `bookmark_${bookmark.id}`;
-    const urlCacheKey = `url_${bookmark.content.url}`;
+    const normalizedUrl = this.normalizeUrl(bookmark.content.url);
+    const urlCacheKey = `url_${normalizedUrl}`;
     
     await Promise.all([
       this.cache.set(idCacheKey, true),
