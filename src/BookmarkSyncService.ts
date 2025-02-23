@@ -275,12 +275,11 @@ export class BookmarkSyncService {
           await this.syncBookmark(bookmark);
         }
         
-        cursor = response.nextCursor;
+        cursor = response.nextCursor || undefined;
         this.logger.info(`Processed batch of ${response.bookmarks.length} bookmarks`);
         
-        if (cursor) {
-          await this.cache.set('last_cursor', cursor);
-        }
+        // Always update the cursor state, even if null/undefined
+        await this.cache.set('last_cursor', cursor || null);
 
         // Backup cache after each batch
         await this.backupService.backup();
@@ -288,7 +287,7 @@ export class BookmarkSyncService {
         
       } while (cursor);
       
-      this.logger.info('Initial sync completed successfully');
+      this.logger.info('Initial sync completed successfully - transitioning to real-time sync');
     } catch (error) {
       this.logger.error('Initial sync failed', { error });
       throw error;
@@ -298,7 +297,7 @@ export class BookmarkSyncService {
   async performIncrementalSync(): Promise<void> {
     const lastCursor = await this.cache.get<string>('last_cursor');
     if (!lastCursor) {
-      this.logger.warn('No last cursor found, performing initial sync');
+      this.logger.info('No last cursor found or initial sync completed, starting fresh sync');
       return this.performInitialSync();
     }
 
@@ -310,8 +309,14 @@ export class BookmarkSyncService {
         await this.syncBookmark(bookmark);
       }
       
-      if (response.nextCursor) {
-        await this.cache.set('last_cursor', response.nextCursor);
+      // Always update cursor state, even if null
+      const newCursor = response.nextCursor || null;
+      await this.cache.set('last_cursor', newCursor);
+      
+      if (!response.nextCursor) {
+        this.logger.info('No more bookmarks to sync - caught up with real-time');
+      } else {
+        this.logger.info(`Updated cursor for next sync: ${response.nextCursor}`);
       }
 
       // Backup cache after incremental sync
