@@ -13,11 +13,7 @@ services:
       - ./logs:/app/logs
     depends_on:
       - redis
-    restart_policy:
-      condition: on-failure
-      delay: 10s
-      max_attempts: 3
-      window: 120s
+    restart: on-failure:3
     networks:
       - sync-network
 
